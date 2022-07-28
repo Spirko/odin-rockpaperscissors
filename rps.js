@@ -1,57 +1,63 @@
 console.log("RPS starting.");
 
+const choices = ['rock', 'paper', 'scissors'];
+Object.freeze(choices);
+
+const results = ['tie', 'player', 'computer'];
+Object.freeze(results);
+
 function getComputerChoice() {
-  switch (Math.floor(Math.random()*3)) {
-    case 0: return 'rock';
-    case 1: return 'paper';
-    case 2: return 'scissors';
-  }
+  return Math.floor(Math.random()*3);
 }
 
-function verifyPlayerSelection(playerSelection) {
-  switch (playerSelection.toLowerCase()) {
-    case 'rock': case 'paper': case 'scissors': return true;
-  }
+function interpretPlayerResponse(playerResponse) {
+  let direct = parseInt(playerResponse);
+  if (direct >= 0) return direct;
+
+  let index = choices.indexOf(playerResponse.toLowerCase());
+  if (index >= 0) return index;
+
   console.log('Please make a valid choice.');
-  return false;
+  return -1;
 }
 
 function playRound(playerSelection, computerSelection) {
-  switch (playerSelection.toLowerCase()) {
-    case 'rock':
-      switch (computerSelection) {
-        case 'rock': return 'Tie, both rock';
-        case 'paper': return 'Computer, paper covers rock';
-        case 'scissors': return 'Player, rock crushos scissors';
-      }
-    case 'paper':
-      switch (computerSelection) {
-        case 'rock': return 'Player, paper covers rock';
-        case 'paper': return 'Tie, both paper';
-        case 'scissors': return 'Computer, scissors cut paper';
-      }
-    case 'scissors':
-      switch (computerSelection) {
-        case 'rock': return 'Computer, rock crushes scissors';
-        case 'paper': return 'Player, scissors cut paper';
-        case 'scissors': return 'Tie, both scissors';
-      }
+  return (playerSelection - computerSelection + 3)%3;
+}
+
+function explain(playerSelection, computerSelection, result) {
+  console.log(`Player: ${choices[playerSelection]}    Computer: ${choices[computerSelection]}    Result: ${results[result]}`);
+}
+
+function logScores(scores) {
+  for(let i in scores) {
+    console.log(`${results[i]}: ${scores[i]}`);
   }
 }
 
+function processScores(scores) {
+  let winner;
+  if (scores[1] > scores[2]) winner = 1;
+  else if (scores[2] > scores[1]) winner = 2;
+  else winner = 0;
+
+  console.log(`Winner is ${results[winner]}.`);
+}
+
 function game() {
-  let scores = {
-    Tie: 0, Computer: 0, Player: 0
-  };
+  let scores = [ 0, 0, 0 ];
   for(let i=0; i<5; i++) {
     let playerSelection;
     do {
-      playerSelection = prompt('Choose rock, paper, or scissors.');
-    } while (!verifyPlayerSelection(playerSelection));
+      const playerResponse = prompt('Choose rock, paper, or scissors.');
+      playerSelection = interpretPlayerResponse(playerResponse);
+    } while (!(playerSelection >= 0));
+
     let computerSelection = getComputerChoice();
     let result = playRound(playerSelection, computerSelection);
-    scores[result.split(',')[0]]++;
-    console.log(result);
+    scores[result]++;
+    explain(playerSelection, computerSelection, result);
   }
-  console.log(scores);
+  logScores(scores);
+  processScores(scores);
 }
