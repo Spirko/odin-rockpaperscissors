@@ -12,7 +12,7 @@ function getComputerChoice() {
 
 function interpretPlayerResponse(playerResponse) {
   let direct = parseInt(playerResponse);
-  if (direct >= 0) return direct;
+  if (direct >= 0 && direct < 3) return direct;
 
   let index = choices.indexOf(playerResponse.toLowerCase());
   if (index >= 0) return index;
