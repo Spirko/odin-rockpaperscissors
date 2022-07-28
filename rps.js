@@ -8,6 +8,14 @@ function getComputerChoice() {
   }
 }
 
+function verifyPlayerSelection(playerSelection) {
+  switch (playerSelection.toLowerCase()) {
+    case 'rock': case 'paper': case 'scissors': return true;
+  }
+  console.log('Please make a valid choice.');
+  return false;
+}
+
 function playRound(playerSelection, computerSelection) {
   switch (playerSelection.toLowerCase()) {
     case 'rock':
@@ -29,4 +37,21 @@ function playRound(playerSelection, computerSelection) {
         case 'scissors': return 'Tie, both scissors';
       }
   }
+}
+
+function game() {
+  let scores = {
+    Tie: 0, Computer: 0, Player: 0
+  };
+  for(let i=0; i<5; i++) {
+    let playerSelection;
+    do {
+      playerSelection = prompt('Choose rock, paper, or scissors.');
+    } while (!verifyPlayerSelection(playerSelection));
+    let computerSelection = getComputerChoice();
+    let result = playRound(playerSelection, computerSelection);
+    scores[result.split(',')[0]]++;
+    console.log(result);
+  }
+  console.log(scores);
 }
